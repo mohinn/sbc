@@ -1,0 +1,209 @@
+<html>
+    <head>
+        <title>Skill Management Form</title>
+
+        <!-- Adding Bootstrap Files -->
+        <link rel="stylesheet" href="assets/bootstrap-5.1.3-dist/css/bootstrap.min.css">
+    </head>
+    <body>
+        <div class="container mt-5">
+            <div class="row">
+                <div class="col-sm-1">
+                    <img src="assets/images/logo.png" style="width: 70; height: 70;"  alt="">
+                </div>
+                <div class="col-sm-6 mt-3">
+                    <h2>Skill Management Portal</h2>
+                </div>
+            </div>
+            <hr>
+            <h4>Enter Personal Details</h4>
+            <div id="success"></div>
+            <form action="" id="userForm">
+                <div class="row">
+                    <div class="col-md-5 mt-3">
+                        <input type="text" id="name" class="form-control" placeholder="Enter Name">
+                        <div id="name-group"></div>
+                        
+                    </div>
+                    <div class="col-md-5 mt-3">
+                        <input type="email" id="email" class="form-control" placeholder="Enter Email">
+                        <div id="email-group"></div>
+                    </div>
+                </div>
+     
+            
+            <h4 class="mt-3">Add Skills</h4>
+           
+                <div class="row">
+                    <div class="col-md-5 mt-3">                       
+                        <select name="tech" id="tech" class="form-control">
+                            <option value="0">Select Technology</option>
+                            <option value="HTML">HTML</option>
+                            <option value="CSS">CSS</option>
+                            <option value="php">PHP</option>
+                            <option value="JavaScript">JavaScript</option>
+                            <option value="Yii1">Yii1</option>
+                        </select>
+                    </div>
+                    <div class="col-md-5 mt-3">
+                        
+                        <select name="skills" id="level" class="form-control">
+                            <option value="0">Select Skill Level</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2 mt-3">
+                        <button id="addRow" type="button" class="btn btn-success">Add</button>
+                    </div>
+                                       
+                </div>
+             
+            
+            <hr class="mt-4">
+            <div class="row">
+                <h4 class="mt-3">Selected Skills</h4>
+                <p id="newSkill"></p>
+            </div>
+            <hr class="mt-4">
+            <div class="row">
+                <div class="col-md-10"></div>
+                <div class="col-md-2">
+                    <button class="btn btn-success">Submit</button>
+                </div>
+            </div>
+        </form>  
+        </div>
+    </body>
+    <script src="assets/bootstrap-5.1.3-dist/js/bootstrap.min.js"></script>
+   
+    <script src="assets/jquery/jquery.min.js"></script>
+
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        var skills = [];
+       
+         $("#addRow").click(function(){
+           
+            
+           var tech = document.getElementById('tech').value;
+           var level = document.getElementById('level').value;
+           var skill = '';
+           if(tech == 0){
+               Swal.fire({
+               icon: 'error',
+               title: 'Plaese Select any technology'
+               });
+           }
+           else if(level == 0){
+            Swal.fire({
+               icon: 'error',
+               title: 'Plaese select skill level'
+               });
+           }
+           else{
+               skill += '<button class="btn btn-secondary disabled mt-3">';
+               skill += tech;
+               skill += ' - Level ';
+               skill += level;
+               skill += '</button>&nbsp;';
+               
+               $('#newSkill').append(skill);
+
+                skillSet = {"technology": tech, "level": level};
+
+                skills.push(skillSet);
+
+                
+
+               document.getElementById('tech').value = 0;
+               document.getElementById('level').value = 0;
+           }
+           
+       });
+
+       
+
+        $(document).ready(function () {
+            $("form").submit(function (event) {
+                var formData = {
+                name: $("#name").val(),
+                email: $("#email").val(),
+                skill: skills,
+                };
+
+                $.ajax({
+                type: "POST",
+                url: "form.php",
+                data: formData,
+                dataType: "json",
+                encode: true,
+                }).done(function (data) {
+                console.log(data);
+                if (!data.success) {
+                        if (data.errors.name) {
+                        $("#name").addClass("is-invalid");
+                        $("#name-group").append(
+                            '<div class="text-danger">' + data.errors.name + "</div>"
+                        );
+                        }
+
+                        if (data.errors.email) {
+                        $("#email").addClass("is-invalid");
+                        $("#email-group").append(
+                            '<div class="text-danger">' + data.errors.email + "</div>"
+                        );
+                        }
+
+                        if (data.errors.skill) {
+                        $("#tech").addClass("is-invalid");
+                        $("#level").addClass("is-invalid");
+                        
+                        }
+
+                    } else {
+                        $("#success").html(
+                        '<div class="alert alert-success">' + data.message + "</div>"
+                        );
+                        $("#userForm")[0].reset();
+
+                        window.setTimeout(function() {
+                            $(".alert").fadeTo(300, 0).slideUp(300, function(){
+                                $(this).remove(); 
+                            });
+                        }, 4000);
+                        
+                        $('#newSkill').empty();
+                        
+                      
+                    }
+
+                });
+
+                event.preventDefault();
+            });
+        });
+
+       $("#name").change(function(){
+           $("#name").removeClass("is-invalid")
+           $("#name-group").empty()
+       });
+
+       $("#email").change(function(){
+           $("#email").removeClass("is-invalid")
+           $("#email-group").empty()
+       });
+
+       $("#tech").change(function(){
+           $("#tech").removeClass("is-invalid")
+       });
+
+       $("#level").change(function(){
+           $("#level").removeClass("is-invalid")
+       });
+    </script>
+</html>

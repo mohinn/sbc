@@ -1,0 +1,32 @@
+
+ var html = '';
+            html += '<div class="row" id="inputFormRow">';
+
+            html += '<div class="col-md-5 mt-3">';
+            html += '<select name="tech[]" id="tech" class="form-control">';
+            html += '<option value="">Select Technology</option>'; 
+            html += '<option value="HTML">HTML</option>';
+            html += '<option value="CSS">CSS</option>';
+            html += '<option value="JavaScript">JavaScript</option>';
+            html += '<option value="Yii1">Yii1</option>';
+            html += '</select>';
+            html += '</div>';
+
+            html += '<div class="col-md-5 mt-3">';
+            html += '<select name="skills[]" id="" class="form-control">';
+            html += '<option value="">Select Skill Level</option>'; 
+            html += '<option value="1">1</option>';
+            html += '<option value="2">2</option>';
+            html += '<option value="3">3</option>';
+            html += '<option value="4">4</option>';
+            html += '<option value="5">5</option>';
+            html += '</select>';
+            html += '</div>';
+            
+            html += '<div class="col-md-2 mt-3">';
+            html += '<button type="button" id="removeRow" class="btn btn-danger">Remove</button>';
+            html += '</div>';
+
+            html += '</div>';
+                
+            $("#newRow").append(html);
